@@ -9,4 +9,8 @@ import jakarta.persistence.Table;
 @Table(name = "books")
 public class BookEntity extends PanacheEntity {
   @JsonbProperty public String title;
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
 }
