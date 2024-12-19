@@ -32,6 +32,24 @@ class JpaSecurityTest {
   }
 
   @Test
+  void shouldReturn403errorByDeleteBookWhenWrongUser() {
+
+    var exampleBook = new BookEntity();
+    exampleBook.setTitle("test title");
+
+    given()
+        .auth()
+        .preemptive()
+        .basic("user", "user")
+        .body(exampleBook)
+        .header("Content-Type", "application/json")
+        .when()
+        .delete("/books-panache/")
+        .then()
+        .statusCode(HttpStatus.SC_FORBIDDEN);
+  }
+
+  @Test
   void shouldCreateBookWhenAdminAuthenticated() {
 
     var exampleBook = new BookEntity();
@@ -47,5 +65,19 @@ class JpaSecurityTest {
         .get("/books/")
         .then()
         .statusCode(HttpStatus.SC_OK);
+  }
+
+  @Test
+  void shouldReturnErrorWhenAdminNotAuthenticated() {
+
+    given()
+        .auth()
+        .preemptive()
+        .basic("admin", "wfgewrrg")
+        .header("Content-Type", "application/json")
+        .when()
+        .get("/books/")
+        .then()
+        .statusCode(HttpStatus.SC_UNAUTHORIZED);
   }
 }
